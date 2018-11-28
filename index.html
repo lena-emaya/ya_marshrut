@@ -15,21 +15,65 @@
 
 <style>
 .map-overlay {
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    background-color: #fff;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.10);
-    border-radius: 3px;
     position: absolute;
     width: 25%;
-    top: 10px;
-    left: 10px;
-    padding: 10px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    background-color: #fff;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.map-overlay fieldset {
     display: none;
+    background: #ddd;
+    border: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.map-overlay input {
+    display: block;
+    border: none;
+    width: 100%;
+    border-radius: 3px;
+    padding: 10px;
+    margin: 0;
+}
+
+.map-overlay .listing {
+    overflow: auto;
+    max-height: 100%;
+}
+
+.map-overlay .listing > * {
+    display: block;
+    padding: 5px 10px;
+    margin: 0;
+}
+
+.map-overlay .listing a {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    color: #404;
+    text-decoration: none;
+}
+
+.map-overlay .listing a:last-child {
+    border: none;
+}
+
+.map-overlay .listing a:hover {
+    background: #f0f0f0;
 }
 </style>
 
 <div id='map'></div>
-<div id='map-overlay' class='map-overlay'></div>
+<div class='map-overlay'>
+    
+    <div id='feature-listing' class='listing'></div>
+</div>
 
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoibGVuYWVtYXlhIiwiYSI6ImNpa3VhbXE5ZjAwMXB3eG00ajVyc2J6ZTIifQ.kmZ4yVcNrupl4H8EonM3aQ';
@@ -41,10 +85,59 @@ var map = new mapboxgl.Map({
     zoom: 9
 });
 
-var overlay = document.getElementById('map-overlay');
 
-// Create a popup, but don't add it to the map yet.
+var airports = [];
 
+var listingEl = document.getElementById('feature-listing');
+
+
+
+
+function renderListings(features) {
+    
+    if (features.length) {
+        features.forEach(function(feature) {
+            var prop = feature.properties;
+            var item = document.createElement('a');
+            
+            item.target = '_blank';
+            item.textContent = prop.index + '' + prop.arrival_time + '';
+            item.addEventListener('mousemove', function() {
+              map.setPaintProperty('points', 'circle-color', '#000');
+            });
+            listingEl.appendChild(item);
+        });
+    } else {
+        var empty = document.createElement('p');
+        empty.textContent = '_';
+        listingEl.appendChild(empty);
+
+    }
+}
+
+
+
+
+// function normalize(string) {
+//     return string.trim().toLowerCase();
+// }
+
+function getUniqueFeatures(array, comparatorProperty) {
+    var existingFeatureKeys = {};
+    // Because features come from tiled vector data, feature geometries may be split
+    // or duplicated across tile boundaries and, as a result, features may appear
+    // multiple times in query results.
+    var uniqueFeatures = array.filter(function(el) {
+        if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+            return false;
+        } else {
+            existingFeatureKeys[el.properties[comparatorProperty]] = true;
+            return true;
+        }
+    });
+
+    return uniqueFeatures;
+}
 
 map.on('load', () => {
 
@@ -72,7 +165,7 @@ map.on('load', () => {
         7,
         1,
         22,
-        5
+        7
       ],
       "circle-color": [
         "match",
@@ -287,7 +380,15 @@ map.addLayer({
     type: 'line',
     source: 'lines',
     paint: {
-      'line-width': 1,
+      'line-width': [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        8,
+        0.3,
+        22,
+        7
+      ],
       'line-color': [
         "match",
         ["get", "vehicle"],
@@ -510,11 +611,19 @@ map.addLayer({
           ["linear"],
           ["zoom"],
           7,
-          1,
+          0.7,
           22,
-          4.5
+          4
         ],
-        "circle-stroke-width": 4,
+        "circle-stroke-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          7,
+          1.5,
+          22,
+          6
+        ],
         "circle-stroke-color": [
           "match",
           ["get", "vehicle__ref"],
@@ -729,24 +838,51 @@ map.addLayer({
 map.on('click', 'points', function (e) {
   map.getCanvas().style.cursor = 'pointer';
   var feature = e.features[0];
-  
-  var relatedFeatures = map.querySourceFeatures('points', {
-            source: 'counties',
-            filter: ['in', 'vehicle__ref', feature.properties.vehicle__ref]
-  });
-  console.log(relatedFeatures);
-  // overlay.innerHTML = '';
-  
-  // // var features = map.queryRenderedFeatures(e.point)
-  // // console.log(features);
-  // var description = e.features[0].properties.arrival_time;
-  // var population = document.createElement('div');
-  // population.textContent = 'Total population: ' + description.toLocaleString();
-  // overlay.appendChild(population);
-  // overlay.style.display = 'block';
-  
   map.setFilter('points_click', ['in', 'vehicle__ref', feature.properties.vehicle__ref]);
   map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle__ref]);
+  map.setPaintProperty('points', 'circle-opacity', 0.35);
+ 
+  var features = map.queryRenderedFeatures({layers:['points']});
+
+  if (features) {
+      var uniqueFeatures = getUniqueFeatures(features, "vehicle__ref");
+      // Populate features for the listing overlay.
+      renderListings(uniqueFeatures);
+  
+      // Clear the input container
+      //filterEl.value = '';
+  
+      // Store the current features in sn `airports` variable to
+      // later use for filtering on `keyup`.
+      airports = uniqueFeatures;
+  }
+
+  
+  
+
+
+  listingEl.addEventListener('click', function(e) {
+        var value = e.target.value;
+
+        // // Filter visible features that don't match the input value.
+        var filtered = points.filter(function(feature) {
+            var name = feature.properties.vehicle__ref;
+            
+            return name.indexOf(value);
+        });
+
+        // Populate the sidebar with filtered results
+        renderListings(filtered);
+        // Set the filter to populate features into the layer.
+        map.setFilter('points', ['match', ['in', 'vehicle__ref', feature.properties.vehicle__ref], filtered.map(function(feature) {
+            return feature.properties.vehicle__ref;
+        }), true, false]);
+        
+    });
+
+    renderListings([]);
+
+   
 });
 
 });
@@ -754,6 +890,3 @@ map.on('click', 'points', function (e) {
 
 </body>
 </html>
-
-
-
