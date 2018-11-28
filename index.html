@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset='utf-8' />
-    <title>Highlight features containing similar data</title>
+    <title>Marshruty</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
@@ -35,100 +35,906 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoibGVuYWVtYXlhIiwiYSI6ImNpa3VhbXE5ZjAwMXB3eG00ajVyc2J6ZTIifQ.kmZ4yVcNrupl4H8EonM3aQ';
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v9',
-    center: [-98, 38.88],
-    minZoom: 2,
-    zoom: 3
+    style: 'mapbox://styles/lenaemaya/cjoy5qp34920s2smek33i7zog',
+    center: [37.613433, 55.753450,],
+    minZoom: 6,
+    zoom: 9
 });
 
 var overlay = document.getElementById('map-overlay');
 
 // Create a popup, but don't add it to the map yet.
-var popup = new mapboxgl.Popup({
-    closeButton: false
+
+
+map.on('load', () => {
+
+  map.addSource('counties', {
+    "type": "geojson",
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points.geojson'
+  });
+
+  map.addLayer({
+    id: "points",
+    type: "circle",
+    source: "counties",
+
+    paint: {
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        1,
+        22,
+        5
+      ],
+      "circle-color": [
+        "case",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [1],
+          true,
+          false
+        ],
+        "hsl(0, 100%, 81%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [2],
+          true,
+          false
+        ],
+        "hsl(239, 88%, 51%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [4],
+          true,
+          false
+        ],
+        "hsl(121, 86%, 43%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [5],
+          true,
+          false
+        ],
+        "hsl(186, 96%, 53%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [10],
+          true,
+          false
+        ],
+        "hsl(323, 92%, 43%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [11],
+          true,
+          false
+        ],
+        "hsl(90, 97%, 67%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [12],
+          true,
+          false
+        ],
+        "hsl(54, 99%, 48%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [14],
+          true,
+          false
+        ],
+        "hsl(130, 90%, 60%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [16],
+          true,
+          false
+        ],
+        "hsl(337, 97%, 74%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [17],
+          true,
+          false
+        ],
+        "hsl(210, 98%, 73%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [18],
+          true,
+          false
+        ],
+        "hsl(36, 98%, 62%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [23],
+          true,
+          false
+        ],
+        "hsl(51, 90%, 20%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [24],
+          true,
+          false
+        ],
+        "hsl(271, 94%, 73%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 25],
+          true,
+          false
+        ],
+        "hsl(76, 15%, 36%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [32],
+          true,
+          false
+        ],
+        "hsl(208, 52%, 73%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [33],
+          true,
+          false
+        ],
+        "hsl(0, 92%, 80%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [34],
+          true,
+          false
+        ],
+        "hsl(169, 86%, 71%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [35],
+          true,
+          false
+        ],
+        "hsl(121, 86%, 44%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [36],
+          true,
+          false
+        ],
+        "hsl(52, 89%, 34%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [38],
+          true,
+          false
+        ],
+        "hsl(295, 98%, 35%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [40],
+          true,
+          false
+        ],
+        "hsl(287, 94%, 85%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [190],
+          true,
+          false
+        ],
+        "hsl(252, 95%, 31%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [189],
+          true,
+          false
+        ],
+        "hsl(341, 97%, 27%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [186],
+          true,
+          false
+        ],
+        "hsl(141, 14%, 60%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 185],
+          true,
+          false
+        ],
+        "hsl(65, 57%, 55%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 183],
+          true,
+          false
+        ],
+        "hsl(198, 50%, 84%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [182],
+          true,
+          false
+        ],
+        "hsl(0, 43%, 56%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [179],
+          true,
+          false
+        ],
+        "hsl(176, 90%, 48%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [171],
+          true,
+          false
+        ],
+        "hsl(49, 97%, 64%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [168],
+          true,
+          false
+        ],
+        "hsl(0, 23%, 48%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [167],
+          true,
+          false
+        ],
+        "hsl(89, 44%, 44%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [165],
+          true,
+          false
+        ],
+        "hsl(216, 92%, 56%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [163],
+          true,
+          false
+        ],
+        "hsl(120, 83%, 54%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [159],
+          true,
+          false
+        ],
+        "hsl(186, 79%, 37%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [158],
+          true,
+          false
+        ],
+        "hsl(303, 57%, 59%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [152],
+          true,
+          false
+        ],
+        "hsl(65, 93%, 45%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [150],
+          true,
+          false
+        ],
+        "hsl(254, 90%, 38%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 149],
+          true,
+          false
+        ],
+        "hsl(157, 77%, 49%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 147],
+          true,
+          false
+        ],
+        "hsl(54, 44%, 46%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 143],
+          true,
+          false
+        ],
+        "hsl(236, 84%, 49%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [140],
+          true,
+          false
+        ],
+        "hsl(284, 13%, 78%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 139],
+          true,
+          false
+        ],
+        "hsl(321, 60%, 67%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 137],
+          true,
+          false
+        ],
+        "hsl(144, 78%, 27%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 136],
+          true,
+          false
+        ],
+        "hsl(59, 42%, 69%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 135],
+          true,
+          false
+        ],
+        "hsl(0, 91%, 18%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 134],
+          true,
+          false
+        ],
+        "hsl(192, 83%, 23%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 133],
+          true,
+          false
+        ],
+        "hsl(53, 72%, 56%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 130],
+          true,
+          false
+        ],
+        "hsl(204, 91%, 53%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 129],
+          true,
+          false
+        ],
+        "hsl(117, 98%, 84%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 128],
+          true,
+          false
+        ],
+        "hsl(334, 88%, 53%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 127],
+          true,
+          false
+        ],
+        "hsl(142, 33%, 28%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 126],
+          true,
+          false
+        ],
+        "hsl(290, 85%, 71%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 124],
+          true,
+          false
+        ],
+        "hsl(83, 84%, 72%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 122],
+          true,
+          false
+        ],
+        "hsl(237, 41%, 78%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 120],
+          true,
+          false
+        ],
+        "hsl(194, 88%, 40%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 119],
+          true,
+          false
+        ],
+        "hsl(128, 75%, 26%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 114],
+          true,
+          false
+        ],
+        "hsl(225, 93%, 73%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [113],
+          true,
+          false
+        ],
+        "hsl(288, 76%, 58%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 111],
+          true,
+          false
+        ],
+        "hsl(0, 79%, 77%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 110],
+          true,
+          false
+        ],
+        "hsl(171, 94%, 43%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 109],
+          true,
+          false
+        ],
+        "hsl(54, 56%, 49%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 108],
+          true,
+          false
+        ],
+        "hsl(269, 23%, 66%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 107],
+          true,
+          false
+        ],
+        "hsl(255, 93%, 31%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 106],
+          true,
+          false
+        ],
+        "hsl(171, 64%, 44%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 103],
+          true,
+          false
+        ],
+        "hsl(136, 85%, 78%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 101],
+          true,
+          false
+        ],
+        "hsl(39, 39%, 61%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 100],
+          true,
+          false
+        ],
+        "hsl(76, 94%, 31%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 99],
+          true,
+          false
+        ],
+        "hsl(319, 94%, 69%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 97],
+          true,
+          false
+        ],
+        "hsl(280, 64%, 74%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 92],
+          true,
+          false
+        ],
+        "hsl(34, 99%, 56%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 90],
+          true,
+          false
+        ],
+        "hsl(228, 98%, 48%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 89],
+          true,
+          false
+        ],
+        "hsl(109, 78%, 62%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 88],
+          true,
+          false
+        ],
+        "hsl(181, 59%, 43%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [87],
+          true,
+          false
+        ],
+        "hsl(268, 60%, 36%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 86],
+          true,
+          false
+        ],
+        "hsl(83, 20%, 53%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 83],
+          true,
+          false
+        ],
+        "hsl(48, 51%, 65%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [0, 81],
+          true,
+          false
+        ],
+        "hsl(120, 56%, 77%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [79],
+          true,
+          false
+        ],
+        "hsl(227, 48%, 78%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [78],
+          true,
+          false
+        ],
+        "hsl(287, 79%, 49%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [76],
+          true,
+          false
+        ],
+        "hsl(51, 90%, 41%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [73],
+          true,
+          false
+        ],
+        "hsl(344, 98%, 35%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [72],
+          true,
+          false
+        ],
+        "hsl(198, 28%, 61%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [68],
+          true,
+          false
+        ],
+        "hsl(110, 40%, 54%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [66],
+          true,
+          false
+        ],
+        "hsl(42, 74%, 42%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [64],
+          true,
+          false
+        ],
+        "hsl(0, 85%, 74%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [63],
+          true,
+          false
+        ],
+        "hsl(255, 86%, 85%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [60],
+          true,
+          false
+        ],
+        "hsl(147, 82%, 48%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [57],
+          true,
+          false
+        ],
+        "hsl(19, 88%, 57%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [55],
+          true,
+          false
+        ],
+        "hsl(354, 95%, 70%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [52],
+          true,
+          false
+        ],
+        "hsl(123, 53%, 37%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [51],
+          true,
+          false
+        ],
+        "hsl(225, 88%, 81%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [49],
+          true,
+          false
+        ],
+        "hsl(130, 17%, 69%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [48],
+          true,
+          false
+        ],
+        "hsl(315, 63%, 54%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [47],
+          true,
+          false
+        ],
+        "hsl(127, 40%, 74%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [46],
+          true,
+          false
+        ],
+        "hsl(63, 92%, 44%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [45],
+          true,
+          false
+        ],
+        "hsl(129, 35%, 62%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [44],
+          true,
+          false
+        ],
+        "hsl(260, 93%, 28%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [43],
+          true,
+          false
+        ],
+        "hsl(0, 0%, 51%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [42],
+          true,
+          false
+        ],
+        "hsl(315, 88%, 56%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [41],
+          true,
+          false
+        ],
+        "hsl(231, 95%, 61%)",
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [188],
+          true,
+          false
+        ],
+        "hsl(0, 26%, 63%)",
+        "hsl(0, 73%, 67%)"
+      ]     
+    }
+  }, "no-listed-orders");
+
+  
+
+    map.addLayer({
+        "id": "points_click",
+        "type": "circle",
+        "source": "counties",
+        
+        "paint": {
+          "circle-color": '#030151',
+          "circle-radius": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            7,
+            1,
+            22,
+            4.5
+          ],
+          "circle-stroke-width": 4,
+          "circle-stroke-color": 
+            "#aaa567"
+        },
+        "filter": ["in", "vehicle__ref", '']
+    }); // Place polygon under these labels.
+
+map.on('click', 'points', function (e) {
+  map.getCanvas().style.cursor = 'pointer';
+  var feature = e.features[0];
+  
+  var relatedFeatures = map.querySourceFeatures('points', {
+            source: 'counties',
+            filter: ['in', 'vehicle__ref', feature.properties.vehicle__ref]
+  });
+  console.log(relatedFeatures);
+  // overlay.innerHTML = '';
+  
+  // // var features = map.queryRenderedFeatures(e.point)
+  // // console.log(features);
+  // var description = e.features[0].properties.arrival_time;
+  // var population = document.createElement('div');
+  // population.textContent = 'Total population: ' + description.toLocaleString();
+  // overlay.appendChild(population);
+  // overlay.style.display = 'block';
+  
+  map.setFilter('points_click', ['in', 'vehicle__ref', feature.properties.vehicle__ref]);
 });
 
-map.on('load', function() {
-    // Add the source to query. In this example we're using
-    // county polygons uploaded as vector tiles
-    map.addSource('counties', {
-        "type": "vector",
-        "url": "mapbox://mapbox.82pkq93d"
-    });
-
-    map.addLayer({
-        "id": "counties",
-        "type": "fill",
-        "source": "counties",
-        "source-layer": "original",
-        "paint": {
-            "fill-outline-color": "rgba(0,0,0,0.1)",
-            "fill-color": "rgba(0,0,0,0.1)"
-        }
-    }, 'place-city-sm'); // Place polygon under these labels.
-
-    map.addLayer({
-        "id": "counties-highlighted",
-        "type": "fill",
-        "source": "counties",
-        "source-layer": "original",
-        "paint": {
-            "fill-outline-color": "#484896",
-            "fill-color": "#6e599f",
-            "fill-opacity": 0.75
-        },
-        "filter": ["in", "COUNTY", ""]
-    }, 'place-city-sm'); // Place polygon under these labels.
-
-    map.on('mousemove', 'counties', function(e) {
-        // Change the cursor style as a UI indicator.
-        map.getCanvas().style.cursor = 'pointer';
-
-        // Single out the first found feature.
-        var feature = e.features[0];
-
-        // Query the counties layer visible in the map. Use the filter
-        // param to only collect results that share the same county name.
-        var relatedFeatures = map.querySourceFeatures('counties', {
-            sourceLayer: 'original',
-            filter: ['in', 'COUNTY', feature.properties.COUNTY]
-        });
-
-        // Render found features in an overlay.
-        overlay.innerHTML = '';
-
-        // Total the population of all features
-        var populationSum = relatedFeatures.reduce(function(memo, feature) {
-            return memo + feature.properties.population;
-        }, 0);
-
-        var title = document.createElement('strong');
-        title.textContent = feature.properties.COUNTY + ' (' + relatedFeatures.length + ' found)';
-
-        var population = document.createElement('div');
-        population.textContent = 'Total population: ' + populationSum.toLocaleString();
-
-        overlay.appendChild(title);
-        overlay.appendChild(population);
-        overlay.style.display = 'block';
-
-        // Add features that share the same county name to the highlighted layer.
-        map.setFilter('counties-highlighted', ['in', 'COUNTY', feature.properties.COUNTY]);
-
-        // Display a popup with the name of the county
-        popup.setLngLat(e.lngLat)
-            .setText(feature.properties.COUNTY)
-            .addTo(map);
-    });
-
-    map.on('mouseleave', 'counties', function() {
-        map.getCanvas().style.cursor = '';
-        popup.remove();
-        map.setFilter('counties-highlighted', ['in', 'COUNTY', '']);
-        overlay.style.display = 'none';
-    });
 });
 </script>
 
 </body>
 </html>
+
+
+
