@@ -832,7 +832,8 @@ map.on('click', 'points', function (e) {
   // вернуть 
   map.setFilter('points_click', ['in', 'vehicle__r', feature.properties.vehicle__r]);
   map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle__r]);
-  map.setPaintProperty('points', 'circle-opacity', 0.35);
+  map.setPaintProperty('points', 'circle-opacity', 0.4);
+  map.setPaintProperty('points', 'circle-stroke-opacity', 0.4);
   
   var newdata=map.queryRenderedFeatures({layers: ['points_click']});
   console.log(newdata);
@@ -861,7 +862,18 @@ map.on('click', 'points', function (e) {
     item.className="tableClass";
     item.textContent =prop.id_ref+'         '+ prop.arrival_ti;
     item.addEventListener('mouseover', function() {
-      map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "id_ref"], prop.id_ref], 6, 2]);
+      //map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "id_ref"], prop.id_ref], 6, 2]);
+      map.setPaintProperty("points", 'circle-radius', [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          7,
+          ["case", ["==", ["get", "id_ref"], prop.id_ref], 
+          5, 2
+          ],
+          22,
+          ["case", ["==", ["get", "id_ref"], prop.id_ref], 
+          10, 4]]);
     });
     overlay.appendChild(item);
   });
