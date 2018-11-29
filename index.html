@@ -21,25 +21,32 @@
        
 
 .container{
+  
   display: flex;
 }
 
- #map { 
-  bottom: 25%;
-}
+
 .aside{
-  display:flex;
-  flex: 0 0 auto;
-  width: 25%;
-  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-  background-color: #fff;
-  overflow-y: scroll;
+  padding: 10px;
+  position: absolute;
+  bottom:10px;
+  top: 0;
+  z-index: 2003030;
+  width: 120px;
+  max-width: 150px;
+  max-height: 600px;
+  overflow: scroll;
+
+  font-family: Arial, Helvetica, sans-serif;
 }  
 .tableClass{
-  overflow-y: scroll;
+  padding: 5px;
+  
+  
 }
 .tableClass:hover{
-  background-color: red;
+  background-color: #ccc;
+  
 }
 
 </style>
@@ -125,7 +132,7 @@ map.on('load', () => {
 
   map.addSource('counties', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_new.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_orders.geojson'
   });
 
   map.addSource('lines', {
@@ -847,17 +854,34 @@ map.on('click', 'points', function (e) {
   // });
   overlay.innerHTML = '';
 
+
+  var sort_by = function(field, reverse, primer){
+  
+  var key = primer ? 
+      function(x) {return primer(x[field])} : 
+      function(x) {return x[field]};
+  
+  reverse = !reverse ? 1 : -1;
+  
+  return function (a, b) {
+      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+    } 
+  }
+
+  newdata.sort(sort_by('arrival_ti', true, parseInt));
+
+
   newdata.forEach(function(feature) {
      var prop =feature.properties;
      var item = document.createElement('div');
      item.className="tableClass";
      
-     item.textContent =prop.arrival_ti;
+     item.textContent =prop.id_ref+'         '+ prop.arrival_ti;
 
     
      //map.addSource('trace', { type: 'geojson', data: newdata });
      item.addEventListener('mouseover', function() {
-      map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "point__lat"], prop.point__lat], 6, 2]);
+      map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "id_ref"], prop.id_ref], 6, 2]);
     });
     overlay.appendChild(item);
      
