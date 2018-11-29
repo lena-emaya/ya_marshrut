@@ -14,18 +14,6 @@
 <body>
 
 <style>
-  body { 
-    margin:0; 
-    padding:0;
-  }
-       
-
-.container{
-  
-  display: flex;
-}
-
-
 .aside{
   padding: 10px;
   position: absolute;
@@ -36,19 +24,15 @@
   max-width: 150px;
   max-height: 600px;
   overflow: scroll;
-
   font-family: Arial, Helvetica, sans-serif;
 }  
 .tableClass{
   padding: 5px;
-  
-  
 }
 .tableClass:hover{
   background-color: #ccc;
   
 }
-
 </style>
 <div class="container">
   <div id='map'></div>
@@ -68,171 +52,79 @@ var map = new mapboxgl.Map({
 });
 
 var overlay = document.getElementById('map-overlay');
-// var airports = [];
-
-// var listingEl = document.getElementById('feature-listing');
-
-
-
-
-// function renderListings(features) {
-    
-//     if (features.length) {
-//         features.forEach(function(feature) {
-//             var prop = feature.properties;
-//             var item = document.createElement('a');
-            
-//             item.target = '_blank';
-//             item.textContent = prop.index + '' + prop.arrival_time + '';
-//             item.addEventListener('mousemove', function() {
-//               map.setPaintProperty('points', 'circle-opacity', 0.2);
-//             });
-//             listingEl.appendChild(item);
-//         });
-//     } else {
-//         var empty = document.createElement('p');
-//         empty.textContent = '_';
-//         listingEl.appendChild(empty);
-
-//     }
-// }
-
-
-
-
-// function normalize(string) {
-//     return string.trim().toLowerCase();
-// }
-
-// function getUniqueFeatures(array, comparatorProperty) {
-//     var existingFeatureKeys = {};
-//     // Because features come from tiled vector data, feature geometries may be split
-//     // or duplicated across tile boundaries and, as a result, features may appear
-//     // multiple times in query results.
-//     var uniqueFeatures = array.filter(function(el) {
-//         if (existingFeatureKeys[el.properties[comparatorProperty]]) {
-//             return false;
-//         } else {
-//             existingFeatureKeys[el.properties[comparatorProperty]] = true;
-//             return true;
-//         }
-//     });
-
-//     return uniqueFeatures;
-// }
-
-// Holds visible airport features for filtering
-
-
-var hoveredStateId =  null;
-
-
 
 map.on('load', () => {
 
   map.addSource('counties', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_orders.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_filter.geojson'
   });
 
   map.addSource('lines', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_routes_simplified.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_filter.geojson'
   });
 
   
+
   map.addLayer({
     id: "points",
     type: "circle",
     source: "counties",
 
     paint: {
+      "circle-stroke-color":'#ffb600',
+      "circle-stroke-width":[
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        [
+          "match",
+          ["get", "vehicle__r"],
+          [190, 83],
+          3,
+          0
+        ],
+        22,
+        [
+          "match",
+          ["get", "vehicle__r"],
+          [190, 83],
+          7,
+          0
+        ]
+      ],
       "circle-radius": [
         "interpolate",
         ["linear"],
         ["zoom"],
         7,
-        1,
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [190, 83],
+          1,
+          1.5
+        ],
         22,
-        7
+        [
+          "match",
+          ["get", "vehicle__ref"],
+          [190, 83],
+          5,
+          5
+        ]
       ],
       "circle-color": [
         "match",
         ["get", "vehicle__r"],
-        [1],
-        "#FF0058",
-        [2],
-        "#1CDA00",
-        [4],
-        "#0238F6",
-        [5],
-        "#0238F6",
-        [10],
-        "#1CDA00",
-        [11],
-        "#DE05D0",
-        [12],
-        "#1CDA00",
-        [14],
-        "#DE05D0",
-        [16],
-        "#1CDA00",
-        [17],
-        "#03A6D0",
-        [18],
-        "#DE05D0",
-        [23],
-        "#0238F6",
-        [24],
-        "#FF0058",
-        [25],
-        "#646565",
-        [32],
-        "#1CDA00",
-        [33],
-        "#AF62FF",
-        [34],
-        "#FF0058",
-        [35],
-        "#1CDA00",
-        [36],
-        "#FF7E29",
-        [38],
-        "#FF0058",
-        [40],
-        "#FF9C9C",
-        [41],
-        "#FF0058",
-        [42],
-        "#0238F6",
-        [43],
-        "#03A6D0",
-        [44],
-        "#646565",
-        [45],
-        "#FF0058",
-        [46],
-        "#FF7E29",
-        [47],
-        "#0238F6",
-        [48],
-        "#1CDA00",
-        [49],
-        "#1CE1B5",
-        [51],
-        "#FF9C9C",
-        [52],
-        "#DE05D0",
-        [55],
-        "hsl(0, 0%, 80%)",
-        [57],
-        "#FF7E29",
         [60],
-        "#1CDA00",
+        "hsl(112, 100%, 43%)",
         [63],
-        "#FF0058",
+        "hsl(339, 100%, 50%)",
         [64],
-        "#1CE1B5",
+        "hsl(167, 78%, 50%)",
         [66],
         "#FF7E29",
         [68],
@@ -242,7 +134,7 @@ map.on('load', () => {
         [73],
         "#0238F6",
         [76],
-        "#cccccc",
+        "#F32D1B",
         [78],
         "#646565",
         [79],
@@ -250,13 +142,13 @@ map.on('load', () => {
         [81],
         "#1CE1B5",
         [83],
-        "#1CDA00",
+        "#ffffff",
         [86],
         "#AF62FF",
         [87],
-        "#cccccc",
+        "#f32d1b",
         [88],
-        "#cccccc",
+        "#f32d1b",
         [89],
         "#FF0058",
         [90],
@@ -290,7 +182,7 @@ map.on('load', () => {
         [114],
         "#1CDA00",
         [119],
-        "hsl(39, 98%, 31%)",
+        "#8A400F",
         [120],
         "#1CE1B5",
         [122],
@@ -302,13 +194,13 @@ map.on('load', () => {
         [127],
         "#5F03C0",
         [128],
-        "#9d6602",
+        "#8A400F",
         [129],
-        "#9d6602",
+        "#8A400F",
         [130],
         "#0238F6",
         [133],
-        "#cccccc",
+        "#f32d1b",
         [134],
         "#03A6D0",
         [135],
@@ -352,13 +244,13 @@ map.on('load', () => {
         [183],
         "#0238F6",
         [185],
-        "#ccc",
+        "#f32d1b",
         [186],
-        "#9d6602",
+        "#8A400F",
         [189],
-        "#FF7E29",
+        "#F32D1B",
         [190],
-        "hsl(41, 95%, 66%)",
+        "hsl(43, 0%, 100%)",
         "hsla(0, 0%, 0%, 0)"
       ]     
     }
@@ -381,80 +273,12 @@ map.addLayer({
       'line-color': [
         "match",
         ["get", "vehicle"],
-        [1],
-        "#FF0058",
-        [2],
-        "#1CDA00",
-        [4],
-        "#0238F6",
-        [5],
-        "#0238F6",
-        [10],
-        "#1CDA00",
-        [11],
-        "#DE05D0",
-        [12],
-        "#1CDA00",
-        [14],
-        "#DE05D0",
-        [16],
-        "#1CDA00",
-        [17],
-        "#03A6D0",
-        [18],
-        "#DE05D0",
-        [23],
-        "#0238F6",
-        [24],
-        "#FF0058",
-        [25],
-        "#646565",
-        [32],
-        "#1CDA00",
-        [33],
-        "#AF62FF",
-        [34],
-        "#FF0058",
-        [35],
-        "#1CDA00",
-        [36],
-        "#FF7E29",
-        [38],
-        "#FF0058",
-        [40],
-        "#FF9C9C",
-        [41],
-        "#FF0058",
-        [42],
-        "#0238F6",
-        [43],
-        "#03A6D0",
-        [44],
-        "#646565",
-        [45],
-        "#FF0058",
-        [46],
-        "#FF7E29",
-        [47],
-        "#0238F6",
-        [48],
-        "#1CDA00",
-        [49],
-        "#1CE1B5",
-        [51],
-        "#FF9C9C",
-        [52],
-        "#DE05D0",
-        [55],
-        "hsl(0, 0%, 80%)",
-        [57],
-        "#FF7E29",
         [60],
-        "#1CDA00",
+        "hsl(112, 100%, 43%)",
         [63],
-        "#FF0058",
+        "hsl(339, 100%, 50%)",
         [64],
-        "#1CE1B5",
+        "hsl(167, 78%, 50%)",
         [66],
         "#FF7E29",
         [68],
@@ -464,7 +288,7 @@ map.addLayer({
         [73],
         "#0238F6",
         [76],
-        "#cccccc",
+        "#F32D1B",
         [78],
         "#646565",
         [79],
@@ -472,13 +296,13 @@ map.addLayer({
         [81],
         "#1CE1B5",
         [83],
-        "#1CDA00",
+        "#ffb600",
         [86],
         "#AF62FF",
         [87],
-        "#cccccc",
+        "#f32d1b",
         [88],
-        "#cccccc",
+        "#f32d1b",
         [89],
         "#FF0058",
         [90],
@@ -512,7 +336,7 @@ map.addLayer({
         [114],
         "#1CDA00",
         [119],
-        "hsl(39, 98%, 31%)",
+        "#8A400F",
         [120],
         "#1CE1B5",
         [122],
@@ -524,13 +348,13 @@ map.addLayer({
         [127],
         "#5F03C0",
         [128],
-        "#9d6602",
+        "#8A400F",
         [129],
-        "#9d6602",
+        "#8A400F",
         [130],
         "#0238F6",
         [133],
-        "#cccccc",
+        "#f32d1b",
         [134],
         "#03A6D0",
         [135],
@@ -574,13 +398,13 @@ map.addLayer({
         [183],
         "#0238F6",
         [185],
-        "#ccc",
+        "#f32d1b",
         [186],
-        "#9d6602",
+        "#8A400F",
         [189],
-        "#FF7E29",
+        "#F32D1B",
         [190],
-        "hsl(41, 95%, 66%)",
+        "#ffb600",
         "hsla(0, 0%, 0%, 0)"
       ]
     },
@@ -617,210 +441,142 @@ map.addLayer({
           6
         ],
         "circle-stroke-color": [
-          "match",
-          ["get", "vehicle__r"],
-          [1],
-          "#FF0058",
-          [2],
-          "#1CDA00",
-          [4],
-          "#0238F6",
-          [5],
-          "#0238F6",
-          [10],
-          "#1CDA00",
-          [11],
-          "#DE05D0",
-          [12],
-          "#1CDA00",
-          [14],
-          "#DE05D0",
-          [16],
-          "#1CDA00",
-          [17],
-          "#03A6D0",
-          [18],
-          "#DE05D0",
-          [23],
-          "#0238F6",
-          [24],
-          "#FF0058",
-          [25],
-          "#646565",
-          [32],
-          "#1CDA00",
-          [33],
-          "#AF62FF",
-          [34],
-          "#FF0058",
-          [35],
-          "#1CDA00",
-          [36],
-          "#FF7E29",
-          [38],
-          "#FF0058",
-          [40],
-          "#FF9C9C",
-          [41],
-          "#FF0058",
-          [42],
-          "#0238F6",
-          [43],
-          "#03A6D0",
-          [44],
-          "#646565",
-          [45],
-          "#FF0058",
-          [46],
-          "#FF7E29",
-          [47],
-          "#0238F6",
-          [48],
-          "#1CDA00",
-          [49],
-          "#1CE1B5",
-          [51],
-          "#FF9C9C",
-          [52],
-          "#DE05D0",
-          [55],
-          "hsl(0, 0%, 80%)",
-          [57],
-          "#FF7E29",
-          [60],
-          "#1CDA00",
-          [63],
-          "#FF0058",
-          [64],
-          "#1CE1B5",
-          [66],
-          "#FF7E29",
-          [68],
-          "#03A6D0",
-          [72],
-          "#03A6D0",
-          [73],
-          "#0238F6",
-          [76],
-          "#cccccc",
-          [78],
-          "#646565",
-          [79],
-          "#1CDA00",
-          [81],
-          "#1CE1B5",
-          [83],
-          "#1CDA00",
-          [86],
-          "#AF62FF",
-          [87],
-          "#cccccc",
-          [88],
-          "#cccccc",
-          [89],
-          "#FF0058",
-          [90],
-          "#01DB06",
-          [92],
-          "#006C03",
-          [97],
-          "#FF0058",
-          [99],
-          "#DE05D0",
-          [100],
-          "#FF9C9C",
-          [101],
-          "#006C03",
-          [103],
-          "#03A6D0",
-          [106],
-          "#FF9C9C",
-          [107],
-          "#AF62FF",
-          [108],
-          "#5C0569",
-          [109],
-          "#AF62FF",
-          [110],
-          "#0238F6",
-          [111],
-          "#1CE1B5",
-          [113],
-          "#FF0058",
-          [114],
-          "#1CDA00",
-          [119],
-          "hsl(39, 98%, 31%)",
-          [120],
-          "#1CE1B5",
-          [122],
-          "#FF0058",
-          [124],
-          "#FF7E29",
-          [126],
-          "#03A6D0",
-          [127],
-          "#5F03C0",
-          [128],
-          "#9d6602",
-          [129],
-          "#9d6602",
-          [130],
-          "#0238F6",
-          [133],
-          "#cccccc",
-          [134],
-          "#03A6D0",
-          [135],
-          "#5F03C0",
-          [136],
-          "#FF7E29",
-          [137],
-          "#006C03",
-          [139],
-          "#FF0058",
-          [140],
-          "#646565",
-          [143],
-          "#5C0569",
-          [147],
-          "#FF0058",
-          [149],
-          "#AF62FF",
-          [150],
-          "#FF9C9C",
-          [152],
-          "#f87c16",
-          [158],
-          "hsl(3, 52%, 64%)",
-          [159],
-          "#0238F6",
-          [163],
-          "#f87c16",
-          [165],
-          "#1CDA00",
-          [167],
-          "#AF62FF",
-          [168],
-          "#03A6D0",
-          [171],
-          "#03a6d0",
-          [179],
-          "#1CE1B5",
-          [182],
-          "#FF9C9C",
-          [183],
-          "#0238F6",
-          [185],
-          "#ccc",
-          [186],
-          "#9d6602",
-          [189],
-          "#FF7E29",
-          [190],
-          "hsl(41, 95%, 66%)",
-          "hsla(0, 0%, 0%, 0)"
-        ]
+        "match",
+        ["get", "vehicle__r"],
+        [60],
+        "hsl(112, 100%, 43%)",
+        [63],
+        "hsl(339, 100%, 50%)",
+        [64],
+        "hsl(167, 78%, 50%)",
+        [66],
+        "#FF7E29",
+        [68],
+        "#03A6D0",
+        [72],
+        "#03A6D0",
+        [73],
+        "#0238F6",
+        [76],
+        "#F32D1B",
+        [78],
+        "#646565",
+        [79],
+        "#1CDA00",
+        [81],
+        "#1CE1B5",
+        [83],
+        "#ffffff",
+        [86],
+        "#AF62FF",
+        [87],
+        "#f32d1b",
+        [88],
+        "#f32d1b",
+        [89],
+        "#FF0058",
+        [90],
+        "#01DB06",
+        [92],
+        "#006C03",
+        [97],
+        "#FF0058",
+        [99],
+        "#DE05D0",
+        [100],
+        "#FF9C9C",
+        [101],
+        "#006C03",
+        [103],
+        "#03A6D0",
+        [106],
+        "#FF9C9C",
+        [107],
+        "#AF62FF",
+        [108],
+        "#5C0569",
+        [109],
+        "#AF62FF",
+        [110],
+        "#0238F6",
+        [111],
+        "#1CE1B5",
+        [113],
+        "#FF0058",
+        [114],
+        "#1CDA00",
+        [119],
+        "#8A400F",
+        [120],
+        "#1CE1B5",
+        [122],
+        "#FF0058",
+        [124],
+        "#FF7E29",
+        [126],
+        "#03A6D0",
+        [127],
+        "#5F03C0",
+        [128],
+        "#8A400F",
+        [129],
+        "#8A400F",
+        [130],
+        "#0238F6",
+        [133],
+        "#f32d1b",
+        [134],
+        "#03A6D0",
+        [135],
+        "#5F03C0",
+        [136],
+        "#FF7E29",
+        [137],
+        "#006C03",
+        [139],
+        "#FF0058",
+        [140],
+        "#646565",
+        [143],
+        "#5C0569",
+        [147],
+        "#FF0058",
+        [149],
+        "#AF62FF",
+        [150],
+        "#FF9C9C",
+        [152],
+        "#f87c16",
+        [158],
+        "hsl(3, 52%, 64%)",
+        [159],
+        "#0238F6",
+        [163],
+        "#f87c16",
+        [165],
+        "#1CDA00",
+        [167],
+        "#AF62FF",
+        [168],
+        "#03A6D0",
+        [171],
+        "#03a6d0",
+        [179],
+        "#1CE1B5",
+        [182],
+        "#FF9C9C",
+        [183],
+        "#0238F6",
+        [185],
+        "#f32d1b",
+        [186],
+        "#8A400F",
+        [189],
+        "#F32D1B",
+        [190],
+        "hsl(43, 0%, 100%)",
+        "hsla(0, 0%, 0%, 0)"
+      ]
       },
       "filter": ["in", "vehicle__r", '']
   });
@@ -834,26 +590,11 @@ map.on('click', 'points', function (e) {
   map.setFilter('points_click', ['in', 'vehicle__r', feature.properties.vehicle__r]);
   map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle__r]);
   map.setPaintProperty('points', 'circle-opacity', 0.35);
-  //var newdata = map.queryRenderedFeatures({layers: ['points_click']});
+  
   var newdata=map.queryRenderedFeatures({layers: ['points_click']});
   console.log(newdata);
 
-  
-  // map.addSource('newdataset', {
-  //   type: 'geojson',
-  //   data: newdata
-  // });
-  // map.addLayer({
-  //   id: "new-circles",
-  //   type: 'circle',
-  //   source: 'newdataset',
-  //   paint: {
-  //     'circle-color': '#000',
-  //     'circle-radius': 4
-  //   }
-  // });
   overlay.innerHTML = '';
-
 
   var sort_by = function(field, reverse, primer){
   
@@ -872,74 +613,17 @@ map.on('click', 'points', function (e) {
 
 
   newdata.forEach(function(feature) {
-     var prop =feature.properties;
-     var item = document.createElement('div');
-     item.className="tableClass";
-     
-     item.textContent =prop.id_ref+'         '+ prop.arrival_ti;
-
-    
-     //map.addSource('trace', { type: 'geojson', data: newdata });
-     item.addEventListener('mouseover', function() {
+    var prop =feature.properties;
+    var item = document.createElement('div');
+    item.className="tableClass";
+    item.textContent =prop.id_ref+'         '+ prop.arrival_ti;
+    item.addEventListener('mouseover', function() {
       map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "id_ref"], prop.id_ref], 6, 2]);
     });
     overlay.appendChild(item);
-     
-     
-//             var prop = feature.properties;
-//             var item = document.createElement('a');
-            
-//             
-//             
-//             listingEl.appendChild(item);
-
-     
-
-//   var features = map.queryRenderedFeatures({layers:['points']});
-
-//   if (features) {
-//       var uniqueFeatures = getUniqueFeatures(features, "vehicle__r");
-//       // Populate features for the listing overlay.
-//       renderListings(uniqueFeatures);
-  
-//       // Clear the input container
-//       //filterEl.value = '';
-  
-//       // Store the current features in sn `airports` variable to
-//       // later use for filtering on `keyup`.
-//       airports = uniqueFeatures;
-//   }
-
-  
-  
-
-
-//   listingEl.addEventListener('click', function(e) {
-//         var value = e.target.value;
-
-//         // // Filter visible features that don't match the input value.
-//         var filtered = points.filter(function(feature) {
-//             var name = feature.properties.vehicle__r;
-            
-//             return name.indexOf(value);
-//         });
-
-//         // Populate the sidebar with filtered results
-//         renderListings(filtered);
-//         // Set the filter to populate features into the layer.
-//         map.setFilter('points', ['match', ['in', 'vehicle__r', feature.properties.vehicle__r], filtered.map(function(feature) {
-//             return feature.properties.vehicle__r;
-//         }), true, false]);
-        
-//     });
-
-//     renderListings([]);
-
+  });
 
 });
-
-});
-
 });
 </script>
 
