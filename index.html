@@ -7,72 +7,47 @@
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.51.0/mapbox-gl.css' rel='stylesheet' />
     <style>
-        body { margin:0; padding:0; }
-        #map { position:absolute; top:0; bottom:0; width:100%; }
+      body { margin:0; padding:0; }
+      #map { position:absolute; top:0; bottom:0; width:100%; }
     </style>
 </head>
 <body>
 
 <style>
-.map-overlay {
-    position: absolute;
-    width: 25%;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    background-color: #fff;
-    max-height: 100%;
-    overflow: hidden;
+  body { 
+    margin:0; 
+    padding:0;
+  }
+       
+
+.container{
+  display: flex;
 }
 
-.map-overlay fieldset {
-    display: none;
-    background: #ddd;
-    border: none;
-    padding: 10px;
-    margin: 0;
+ #map { 
+  bottom: 25%;
+}
+.aside{
+  display:flex;
+  flex: 0 0 auto;
+  width: 25%;
+  font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+  background-color: #fff;
+  overflow-y: scroll;
+}  
+.tableClass{
+  overflow-y: scroll;
+}
+.tableClass:hover{
+  background-color: red;
 }
 
-.map-overlay input {
-    display: block;
-    border: none;
-    width: 100%;
-    border-radius: 3px;
-    padding: 10px;
-    margin: 0;
-}
-
-.map-overlay .listing {
-    overflow: auto;
-    max-height: 100%;
-}
-
-.map-overlay .listing > * {
-    display: block;
-    padding: 5px 10px;
-    margin: 0;
-}
-
-.map-overlay .listing a {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    color: #404;
-    text-decoration: none;
-}
-
-.map-overlay .listing a:last-child {
-    border: none;
-}
-
-.map-overlay .listing a:hover {
-    background: #f0f0f0;
-}
 </style>
-
-<div id='map'></div>
-<div class='map-overlay'>
-    
-    <div id='feature-listing' class='listing'></div>
+<div class="container">
+  <div id='map'></div>
+  <div class="aside">
+    <div class='map-overlay' id='map-overlay'>
+  </div>
 </div>
 
 <script>
@@ -85,35 +60,35 @@ var map = new mapboxgl.Map({
     zoom: 9
 });
 
+var overlay = document.getElementById('map-overlay');
+// var airports = [];
 
-var airports = [];
-
-var listingEl = document.getElementById('feature-listing');
-
-
+// var listingEl = document.getElementById('feature-listing');
 
 
-function renderListings(features) {
+
+
+// function renderListings(features) {
     
-    if (features.length) {
-        features.forEach(function(feature) {
-            var prop = feature.properties;
-            var item = document.createElement('a');
+//     if (features.length) {
+//         features.forEach(function(feature) {
+//             var prop = feature.properties;
+//             var item = document.createElement('a');
             
-            item.target = '_blank';
-            item.textContent = prop.index + '' + prop.arrival_time + '';
-            item.addEventListener('mousemove', function() {
-              map.setPaintProperty('points', 'circle-color', '#000');
-            });
-            listingEl.appendChild(item);
-        });
-    } else {
-        var empty = document.createElement('p');
-        empty.textContent = '_';
-        listingEl.appendChild(empty);
+//             item.target = '_blank';
+//             item.textContent = prop.index + '' + prop.arrival_time + '';
+//             item.addEventListener('mousemove', function() {
+//               map.setPaintProperty('points', 'circle-opacity', 0.2);
+//             });
+//             listingEl.appendChild(item);
+//         });
+//     } else {
+//         var empty = document.createElement('p');
+//         empty.textContent = '_';
+//         listingEl.appendChild(empty);
 
-    }
-}
+//     }
+// }
 
 
 
@@ -122,33 +97,40 @@ function renderListings(features) {
 //     return string.trim().toLowerCase();
 // }
 
-function getUniqueFeatures(array, comparatorProperty) {
-    var existingFeatureKeys = {};
-    // Because features come from tiled vector data, feature geometries may be split
-    // or duplicated across tile boundaries and, as a result, features may appear
-    // multiple times in query results.
-    var uniqueFeatures = array.filter(function(el) {
-        if (existingFeatureKeys[el.properties[comparatorProperty]]) {
-            return false;
-        } else {
-            existingFeatureKeys[el.properties[comparatorProperty]] = true;
-            return true;
-        }
-    });
+// function getUniqueFeatures(array, comparatorProperty) {
+//     var existingFeatureKeys = {};
+//     // Because features come from tiled vector data, feature geometries may be split
+//     // or duplicated across tile boundaries and, as a result, features may appear
+//     // multiple times in query results.
+//     var uniqueFeatures = array.filter(function(el) {
+//         if (existingFeatureKeys[el.properties[comparatorProperty]]) {
+//             return false;
+//         } else {
+//             existingFeatureKeys[el.properties[comparatorProperty]] = true;
+//             return true;
+//         }
+//     });
 
-    return uniqueFeatures;
-}
+//     return uniqueFeatures;
+// }
+
+// Holds visible airport features for filtering
+
+
+var hoveredStateId =  null;
+
+
 
 map.on('load', () => {
 
   map.addSource('counties', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_new.geojson'
   });
 
   map.addSource('lines', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_routes_full.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_routes_simplified.geojson'
   });
 
   
@@ -169,7 +151,7 @@ map.on('load', () => {
       ],
       "circle-color": [
         "match",
-        ["get", "vehicle__ref"],
+        ["get", "vehicle__r"],
         [1],
         "#FF0058",
         [2],
@@ -615,6 +597,9 @@ map.addLayer({
           22,
           4
         ],
+        "circle-opacity": 
+                0.5
+            ,
         "circle-stroke-width": [
           "interpolate",
           ["linear"],
@@ -626,7 +611,7 @@ map.addLayer({
         ],
         "circle-stroke-color": [
           "match",
-          ["get", "vehicle__ref"],
+          ["get", "vehicle__r"],
           [1],
           "#FF0058",
           [2],
@@ -830,7 +815,7 @@ map.addLayer({
           "hsla(0, 0%, 0%, 0)"
         ]
       },
-      "filter": ["in", "vehicle__ref", '']
+      "filter": ["in", "vehicle__r", '']
   });
 
   
@@ -838,51 +823,97 @@ map.addLayer({
 map.on('click', 'points', function (e) {
   map.getCanvas().style.cursor = 'pointer';
   var feature = e.features[0];
-  map.setFilter('points_click', ['in', 'vehicle__ref', feature.properties.vehicle__ref]);
-  map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle__ref]);
+  // вернуть 
+  map.setFilter('points_click', ['in', 'vehicle__r', feature.properties.vehicle__r]);
+  map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle__r]);
   map.setPaintProperty('points', 'circle-opacity', 0.35);
- 
-  var features = map.queryRenderedFeatures({layers:['points']});
-
-  if (features) {
-      var uniqueFeatures = getUniqueFeatures(features, "vehicle__ref");
-      // Populate features for the listing overlay.
-      renderListings(uniqueFeatures);
-  
-      // Clear the input container
-      //filterEl.value = '';
-  
-      // Store the current features in sn `airports` variable to
-      // later use for filtering on `keyup`.
-      airports = uniqueFeatures;
-  }
+  //var newdata = map.queryRenderedFeatures({layers: ['points_click']});
+  var newdata=map.queryRenderedFeatures({layers: ['points_click']});
+  console.log(newdata);
 
   
-  
+  // map.addSource('newdataset', {
+  //   type: 'geojson',
+  //   data: newdata
+  // });
+  // map.addLayer({
+  //   id: "new-circles",
+  //   type: 'circle',
+  //   source: 'newdataset',
+  //   paint: {
+  //     'circle-color': '#000',
+  //     'circle-radius': 4
+  //   }
+  // });
+  overlay.innerHTML = '';
 
+  newdata.forEach(function(feature) {
+     var prop =feature.properties;
+     var item = document.createElement('div');
+     item.className="tableClass";
+     
+     item.textContent =prop.arrival_ti;
 
-  listingEl.addEventListener('click', function(e) {
-        var value = e.target.value;
-
-        // // Filter visible features that don't match the input value.
-        var filtered = points.filter(function(feature) {
-            var name = feature.properties.vehicle__ref;
-            
-            return name.indexOf(value);
-        });
-
-        // Populate the sidebar with filtered results
-        renderListings(filtered);
-        // Set the filter to populate features into the layer.
-        map.setFilter('points', ['match', ['in', 'vehicle__ref', feature.properties.vehicle__ref], filtered.map(function(feature) {
-            return feature.properties.vehicle__ref;
-        }), true, false]);
-        
+    
+     //map.addSource('trace', { type: 'geojson', data: newdata });
+     item.addEventListener('mouseover', function() {
+      map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "point__lat"], prop.point__lat], 6, 2]);
     });
+    overlay.appendChild(item);
+     
+     
+//             var prop = feature.properties;
+//             var item = document.createElement('a');
+            
+//             
+//             
+//             listingEl.appendChild(item);
 
-    renderListings([]);
+     
 
-   
+//   var features = map.queryRenderedFeatures({layers:['points']});
+
+//   if (features) {
+//       var uniqueFeatures = getUniqueFeatures(features, "vehicle__r");
+//       // Populate features for the listing overlay.
+//       renderListings(uniqueFeatures);
+  
+//       // Clear the input container
+//       //filterEl.value = '';
+  
+//       // Store the current features in sn `airports` variable to
+//       // later use for filtering on `keyup`.
+//       airports = uniqueFeatures;
+//   }
+
+  
+  
+
+
+//   listingEl.addEventListener('click', function(e) {
+//         var value = e.target.value;
+
+//         // // Filter visible features that don't match the input value.
+//         var filtered = points.filter(function(feature) {
+//             var name = feature.properties.vehicle__r;
+            
+//             return name.indexOf(value);
+//         });
+
+//         // Populate the sidebar with filtered results
+//         renderListings(filtered);
+//         // Set the filter to populate features into the layer.
+//         map.setFilter('points', ['match', ['in', 'vehicle__r', feature.properties.vehicle__r], filtered.map(function(feature) {
+//             return feature.properties.vehicle__r;
+//         }), true, false]);
+        
+//     });
+
+//     renderListings([]);
+
+
+});
+
 });
 
 });
