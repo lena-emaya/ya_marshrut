@@ -57,7 +57,7 @@ map.on('load', () => {
 
   map.addSource('counties', {
     "type": "geojson",
-    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/points_new_filter.geojson'
+    "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/marshrut_full_new_filter.geojson'
   });
 
   map.addSource('lines', {
@@ -571,14 +571,14 @@ map.on('click', 'points', function (e) {
     } 
   }
 
-  newdata.sort(sort_by('index', true, parseInt));
+  newdata.sort(sort_by('arrival_time_clean', true, parseInt));
 
 
   newdata.forEach(function(feature) {
     var prop =feature.properties;
     var item = document.createElement('div');
     item.className="tableClass";
-    item.textContent =prop.vehicle_ref+'         '+ prop.arrival_time;
+    item.textContent =prop.vehicle_ref+'         '+ prop.arrival_time_clean;
     item.addEventListener('mouseover', function() {
       //map.setPaintProperty("points", 'circle-radius', ["case", ["==", ["get", "id_ref"], prop.id_ref], 6, 2]);
       map.setPaintProperty("points", 'circle-radius', [
