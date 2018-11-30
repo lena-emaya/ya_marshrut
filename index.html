@@ -65,7 +65,57 @@ map.on('load', () => {
     "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_new_filter.geojson'
   });
 
-  
+  map.addLayer({
+    id: "points-stops",
+    type: "circle",
+    source: "counties",
+    paint: {
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        2.5,
+        22,
+        5.5
+      ],
+      "circle-color": [
+        "match",
+        ["get", "index"],
+        [8, 12, 10, 11, 9],
+        "hsl(59, 0%, 100%)",
+        [74, 75, 76, 7],
+        "#ffffff",
+        [54, 55, 56, 57, 58],
+        "#ffffff",
+        [13, 14, 15, 16],
+        "#ffffff",
+        "hsla(0, 0%, 0%, 0)"
+      ],
+      "circle-stroke-color": [
+        "match",
+        ["get", "index"],
+        [8, 12, 10, 11, 9],
+        "#9105f5",
+        [74, 75, 76, 7],
+        "#9105f5",
+        [54, 55, 56, 57, 58],
+        "#9105f5",
+        [13, 14, 15, 16],
+        "#9105f5",
+        "hsla(0, 0%, 0%, 0)"
+      ],
+      "circle-stroke-width": 1
+    },
+    "filter": [
+      "all",
+      [
+        "in",
+        "vehicle_ref",
+        1063
+      ]
+    ]
+  },"no-listed-orders");
 
   map.addLayer({
     id: "points",
@@ -364,7 +414,57 @@ map.addLayer({
     "filter": ["in", "vehicle", '']
   });
   
-
+  map.addLayer({
+    id: "points-stops-click",
+    type: "circle",
+    source: "counties",
+    paint: {
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        3,
+        22,
+        14
+      ],
+      "circle-color": [
+        "match",
+        ["get", "index"],
+        [8, 12, 10, 11, 9],
+        "hsl(59, 0%, 100%)",
+        [74, 75, 76, 7],
+        "#ffffff",
+        [54, 55, 56, 57, 58],
+        "#ffffff",
+        [13, 14, 15, 16],
+        "#ffffff",
+        "hsla(0, 0%, 0%, 0)"
+      ],
+      "circle-stroke-color": [
+        "match",
+        ["get", "index"],
+        [8, 12, 10, 11, 9],
+        "#9105f5",
+        [74, 75, 76, 7],
+        "#9105f5",
+        [54, 55, 56, 57, 58],
+        "#9105f5",
+        [13, 14, 15, 16],
+        "#9105f5",
+        "hsla(0, 0%, 0%, 0)"
+      ],
+      "circle-stroke-width": 1
+    },
+    "filter": ["all",["in", "vehicle_ref", ''],[
+      "all",
+      [
+        "in",
+        "vehicle_ref",
+        1063
+      ]
+    ]]
+  },"no-listed-orders");
   map.addLayer({
       "id": "points_click",
       "type": "circle",
@@ -555,6 +655,11 @@ map.on('click', 'points', function (e) {
   // вернуть 
   map.setFilter('points_click', ['in', 'vehicle_ref', feature.properties.vehicle_ref]);
   map.setFilter('lines', ['in', 'vehicle', feature.properties.vehicle_ref]);
+  map.setPaintProperty('points-stops', 'circle-radius', [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          7,3,22,14])
   map.setPaintProperty('points', 'circle-opacity', 0.35);
   map.setPaintProperty('points', 'circle-stroke-opacity', 0.8);
   
