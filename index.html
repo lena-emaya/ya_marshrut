@@ -51,6 +51,7 @@ var map = new mapboxgl.Map({
     zoom: 9
 });
 
+
 var overlay = document.getElementById('map-overlay');
 
 map.on('load', () => {
@@ -69,6 +70,8 @@ map.on('load', () => {
     "type": "geojson",
     "data": 'https://raw.githubusercontent.com/lena-emaya/ya_marshrut/master/lines_new_filter.geojson'
   });
+
+
 
   map.addLayer({
     id: "points-stops",
@@ -121,58 +124,34 @@ map.on('load', () => {
     paint: {
       "circle-stroke-color":[
         "match",
-        ["get", "vehicle_ref"],
-        [4108],
-        "hsl(43, 100%, 50%)",
-        "hsla(0, 0%, 100%, 0)"
+        ["get", "index"],
+        [28],
+        "hsl(0, 100%, 50%)",
+        "hsla(0, 0%, 0%, 0)"
       ],
       "circle-stroke-width":[
         "interpolate",
-        ["linear"],
+        ["exponential", 1.2],
         ["zoom"],
         7,
-        [
-          "match",
-          ["get", "vehicle_ref"],
-          [4108],
-          3,
-          0
-        ],
+        4,
         22,
-        [
-          "match",
-          ["get", "vehicle_ref"],
-          [4108],
-          7,
-          0
-        ]
+        25
       ],
-      "circle-radius": [
+      "circle-radius":[
         "interpolate",
-        ["linear"],
+        ["exponential", 1.2],
         ["zoom"],
         7,
-        [
-          "match",
-          ["get", "vehicle_ref"],
-          [4108],
-          1,
-          1.5
-        ],
+        1,
         22,
-        [
-          "match",
-          ["get", "vehicle_ref"],
-          [4108],
-          5,
-          5
-        ]
+        25
       ],
       "circle-color":[
         "match",
         ["get", "vehicle_ref"],
         [1044],
-        "#f32d1b",
+        "hsl(46, 100%, 54%)",
         [1049],
         "#646565",
         [1055],
@@ -194,9 +173,9 @@ map.on('load', () => {
         [1092],
         "#006C03",
         [1097],
-        "#F32D1B",
+        "#ffc814",
         [2064],
-        "#F32D1B",
+        "#ffc814",
         [2068],
         "#9105f5",
         [2078],
@@ -204,7 +183,7 @@ map.on('load', () => {
         [2081],
         "#fd3089",
         [2083],
-        "#F32D1B",
+        "#ffc814",
         [2089],
         "#0238F6",
         [2101],
@@ -232,17 +211,17 @@ map.on('load', () => {
         [3124],
         "#FF7E29",
         [3126],
-        "#F32D1B",
+        "#ffc814",
         [3128],
         "#19A8FF",
         [3130],
-        "#F32D1B",
+        "#ffc814",
         [3133],
         "#0238F6",
         [4055],
         "#fe72fb",
         [4057],
-        "#F32D1B",
+        "#ffc814",
         [4063],
         "#5C0569",
         [4072],
@@ -262,9 +241,9 @@ map.on('load', () => {
         [4107],
         "#fd3089",
         [4108],
-        "hsl(29, 0%, 100%)",
+        "hsl(229, 33%, 66%)",
         [4109],
-        "#FF7E29",
+        "#ff7e29",
         [4113],
         "#0238F6",
         [4119],
@@ -292,15 +271,15 @@ map.addLayer({
         ["linear"],
         ["zoom"],
         8,
-        0.3,
+        0.2,
         22,
-        7
+        3.5
       ],
       'line-color':[
         "match",
         ["get", "vehicle"],
         [1044],
-        "#f32d1b",
+        "hsl(46, 100%, 54%)",
         [1049],
         "#646565",
         [1055],
@@ -322,9 +301,9 @@ map.addLayer({
         [1092],
         "#006C03",
         [1097],
-        "#F32D1B",
+        "#ffc814",
         [2064],
-        "#F32D1B",
+        "#ffc814",
         [2068],
         "#9105f5",
         [2078],
@@ -332,7 +311,7 @@ map.addLayer({
         [2081],
         "#fd3089",
         [2083],
-        "#F32D1B",
+        "#ffc814",
         [2089],
         "#0238F6",
         [2101],
@@ -360,17 +339,17 @@ map.addLayer({
         [3124],
         "#FF7E29",
         [3126],
-        "#F32D1B",
+        "#ffc814",
         [3128],
         "#19A8FF",
         [3130],
-        "#F32D1B",
+        "#ffc814",
         [3133],
         "#0238F6",
         [4055],
         "#fe72fb",
         [4057],
-        "#F32D1B",
+        "#ffc814",
         [4063],
         "#5C0569",
         [4072],
@@ -390,9 +369,9 @@ map.addLayer({
         [4107],
         "#fd3089",
         [4108],
-        "#ffb700",
+        "hsl(229, 33%, 66%)",
         [4109],
-        "#FF7E29",
+        "#ff7e29",
         [4113],
         "#0238F6",
         [4119],
@@ -421,9 +400,9 @@ map.addLayer({
         ["linear"],
         ["zoom"],
         7,
-        3,
+        2,
         22,
-        14
+        13
       ],
       "circle-color": [
         "match",
@@ -460,74 +439,12 @@ map.addLayer({
       "id": "points_click",
       "type": "circle",
       "source": "counties",
-
       "paint": {
-        "circle-color": '#fff',
-        // "circle-radius": [
-        //   "interpolate",
-        //   ["linear"],
-        //   ["zoom"],
-        //   7,
-        //   0.7,
-        //   22,
-        //   4
-        // ],
-        "circle-radius": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          7,
-          [
-            "match",
-            ["get", "vehicle_ref"],
-            [4108],
-            1.5,
-            1.5
-          ],
-          22,
-          [
-            "match",
-            ["get", "vehicle_ref"],
-            [4108],
-            5,
-            5
-          ]
-        ],
-        // "circle-stroke-width": [
-        //     "interpolate",
-        //     ["linear"],
-        //     ["zoom"],
-        //     7,
-        //     1.5,
-        //     22,
-        //     6
-        //   ],
-          "circle-stroke-width":[
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          7,
-          [
-            "match",
-            ["get", "vehicle_ref"],
-            [190, 83],
-            4,
-            1.5
-          ],
-          22,
-          [
-            "match",
-            ["get", "vehicle_ref"],
-            [190, 83],
-            8,
-            6
-          ]
-        ],
-        "circle-stroke-color":[
+        "circle-color": [
           "match",
           ["get", "vehicle_ref"],
           [1044],
-          "#f32d1b",
+          "hsl(46, 100%, 54%)",
           [1049],
           "#646565",
           [1055],
@@ -549,9 +466,9 @@ map.addLayer({
           [1092],
           "#006C03",
           [1097],
-          "#F32D1B",
+          "#ffc814",
           [2064],
-          "#F32D1B",
+          "#ffc814",
           [2068],
           "#9105f5",
           [2078],
@@ -559,7 +476,7 @@ map.addLayer({
           [2081],
           "#fd3089",
           [2083],
-          "#F32D1B",
+          "#ffc814",
           [2089],
           "#0238F6",
           [2101],
@@ -587,17 +504,17 @@ map.addLayer({
           [3124],
           "#FF7E29",
           [3126],
-          "#F32D1B",
+          "#ffc814",
           [3128],
           "#19A8FF",
           [3130],
-          "#F32D1B",
+          "#ffc814",
           [3133],
           "#0238F6",
           [4055],
           "#fe72fb",
           [4057],
-          "#F32D1B",
+          "#ffc814",
           [4063],
           "#5C0569",
           [4072],
@@ -617,9 +534,9 @@ map.addLayer({
           [4107],
           "#fd3089",
           [4108],
-          "#ffb700",
+          "hsl(229, 33%, 66%)",
           [4109],
-          "#FF7E29",
+          "#ff7e29",
           [4113],
           "#0238F6",
           [4119],
@@ -633,9 +550,131 @@ map.addLayer({
           [4136],
           "#646565",
           "#000000"
-        ]
+        ],
+        // "circle-radius": [
+        //   "interpolate",
+        //   ["linear"],
+        //   ["zoom"],
+        //   7,
+        //   0.7,
+        //   22,
+        //   4
+        // ],
+        "circle-radius": [
+          "interpolate",
+          ["exponential", 1.2],
+          ["zoom"],
+          7,
+          1.7,
+          22,
+          27
+        ],
+        "circle-stroke-width": 1,
+        "circle-stroke-opacity": 0.4,
+        "circle-stroke-color": '#fff'
+        // "circle-stroke-width": [
+        //     "interpolate",
+        //     ["linear"],
+        //     ["zoom"],
+        //     7,
+        //     1.5,
+        //     22,
+        //     6
+        //   ],
+        //   "circle-stroke-width":[
+        //   "interpolate",
+        //   ["linear"],
+        //   ["zoom"],
+        //   7,
+        //   [
+        //     "match",
+        //     ["get", "vehicle_ref"],
+        //     [190, 83],
+        //     4,
+        //     1.5
+        //   ],
+        //   22,
+        //   [
+        //     "match",
+        //     ["get", "vehicle_ref"],
+        //     [190, 83],
+        //     8,
+        //     6
+        //   ]
+        // ],
+        // "circle-stroke-color":
+        // ]
       },
       "filter": ["in", "vehicle_ref", '']
+  });
+
+  map.addLayer({
+    "id": "baza-blur",
+    "type": "circle",
+    "source": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [37.597261, 55.807668]
+            }
+        }]
+      }
+    },
+    "paint": {
+      "circle-color": '#a8a7a9',
+      "circle-radius": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        8,
+        22,
+        20
+      ],
+      "circle-blur": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        7,
+        0.4,
+        22,
+        0.2
+      ]
+    }
+  });
+
+    map.addLayer({
+    "id": "baza",
+    "type": "symbol",
+    "source": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [{
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [37.597261, 55.807668]
+            }
+        }]
+      }
+    },
+    "layout": {
+      "icon-image": "baza",
+      "icon-size": [
+      "interpolate",
+      ["linear"],
+      ["zoom"],
+      7,
+      0.45,
+      22,
+      1.25
+    ]
+    }
   });
 
   
@@ -650,12 +689,10 @@ map.on('click', 'points', function (e) {
   map.setPaintProperty('points', 'circle-opacity', 0.35);
   map.setPaintProperty('points', 'circle-stroke-opacity', 0.8);
   
-  var newdata=map.queryRenderedFeatures({layers: ['points_click']});
-  //console.log(newdata);
-
+  var newdata=map.queryRenderedFeatures({layers: ['points_click']}); 
+ 
   overlay.innerHTML = '';
 
- 
   // var sort_by = function(field, reverse, primer){
   
   // var key = primer ? 
@@ -670,7 +707,7 @@ map.on('click', 'points', function (e) {
   // }
 
 
-  //var newlist = newdata.sort(sort_by('index', true, parseInt));
+  // var newlist = newdata.sort(sort_by('index', true, parseInt));
 
   
   var title = document.createElement('strong');
